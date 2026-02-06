@@ -2,8 +2,13 @@
 import { useAccountStore } from '@/stores/AccountStore';
 import { Button, Message } from 'primevue';
 import AccountItem from '@/components/AccountItem.vue';
+import { onMounted } from 'vue';
 
 const AccountStore = useAccountStore();
+
+onMounted(() => {
+  AccountStore.load();
+})
 </script>
 
 <template>
