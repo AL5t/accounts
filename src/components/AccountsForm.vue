@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { useAccountStore } from '@/stores/AccountStore';
 import { Button, Message } from 'primevue';
+import AccountItem from '@/components/AccountItem.vue';
+
+const AccountStore = useAccountStore();
 </script>
 
 <template>
   <div>
     <div class="header">
       <div>Учетные записи</div>
-      <Button label="+"></Button>
+      <Button label="+" @click="AccountStore.addAccount"></Button>
     </div>
 
     <div class="message">
@@ -23,7 +27,13 @@ import { Button, Message } from 'primevue';
       <span></span>
     </div>
 
-    <div class="items"></div>
+    <div class="items">
+      <AccountItem
+        v-for="account in AccountStore.accounts"
+        :key="account.id"
+        :account="account"
+      ></AccountItem>
+    </div>
   </div>
 </template>
 
