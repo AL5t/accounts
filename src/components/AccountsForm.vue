@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useAccountStore } from '@/stores/AccountStore';
-import { Button, Message } from 'primevue';
-import AccountItem from '@/components/AccountItem.vue';
 import { onMounted } from 'vue';
+import { Button, Message } from 'primevue';
+import { useAccountStore } from '@/stores/AccountStore';
+import AccountItem from '@/components/AccountItem.vue';
 
 const AccountStore = useAccountStore();
 
