@@ -12,6 +12,11 @@ export interface Account {
   password: string | null,
 }
 
+export interface AccountTypeOption {
+  label: string;
+  value: AccountType;
+}
+
 export interface AccountForm {
   id: string;
   tags: string;

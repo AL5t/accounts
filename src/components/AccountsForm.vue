@@ -1,21 +1,26 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { Button, Message } from 'primevue';
-import { useAccountStore } from '@/stores/AccountStore';
-import AccountItem from '@/components/AccountItem.vue';
 
-const AccountStore = useAccountStore();
+import AccountItem from '@/components/AccountItem.vue';
+import { useAccountStore } from '@/stores/AccountStore';
+
+const accountStore = useAccountStore();
+
+function loadAccounts() {
+  accountStore.load();
+}
 
 onMounted(() => {
-  AccountStore.load();
-})
+  loadAccounts();
+});
 </script>
 
 <template>
   <div>
     <div class="header">
       <div>Учетные записи</div>
-      <Button label="+" @click="AccountStore.addAccount"></Button>
+      <Button label="+" @click="accountStore.addAccount"></Button>
     </div>
 
     <div class="message">
@@ -34,7 +39,7 @@ onMounted(() => {
 
     <div class="items">
       <AccountItem
-        v-for="account in AccountStore.accounts"
+        v-for="account in accountStore.accounts"
         :key="account.id"
         :account="account"
       ></AccountItem>

@@ -1,64 +1,27 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { Button, InputText, Password, Select } from 'primevue';
-import { useForm } from 'vee-validate';
+import type { Account } from '@/types/account';
 
-import type { Account, AccountForm } from '@/types/account';
-import { useAccountStore } from '@/stores/AccountStore';
-import { parseTags } from '@/utils/parseTags';
-import { AccountSchema } from '@/schemas/account.schema';
+import { useAccountItemForm } from '@/composables/useAccountItemForm';
 
-const AccountStore = useAccountStore();
 const props = defineProps<{
   account: Account,
 }>();
 
 const {
   errors,
-  validate,
-  defineField,
-  validateField,
-} = useForm<AccountForm>({
-  validationSchema: AccountSchema,
-  initialValues: {
-    id: props.account.id,
-    tags: props.account.tags.map(t => t.text).join('; '),
-    type: props.account.type,
-    login: props.account.login,
-    password: props.account.password,
-  },
-});
-
-const [tags] = defineField('tags');
-const [type] = defineField('type');
-const [login] = defineField('login');
-const [password] = defineField('password');
-
-const typeOptions = ref([
-  { label: 'Локальная', value: 'LOCAL', },
-  { label: 'LDAP', value: 'LDAP', },
-]);
-
-async function save() {
-  const { valid } = await validate();
-  if (!valid) return;
-
-  AccountStore.updateAccount({
-    id: props.account.id,
-    tags: parseTags(tags.value),
-    type: type.value,
-    login: login.value,
-    password: type.value === 'LOCAL' ? password.value : null,
-  });
-}
-
-watch(type, () => {
-  validateField('password');
-})
+  tags,
+  type,
+  login,
+  password,
+  save,
+  deleteAccount,
+  isLocalAccount,
+  accountTypeOptions,
+} = useAccountItemForm(props.account);
 </script>
 
 <template>
-  <div class="account-row" :class="type !== 'LOCAL' ? 'no-fourth-column' : ''">
+  <div class="account-row" :class="!isLocalAccount ? 'no-fourth-column' : ''">
     <div class="field">
       <InputText
         v-model="tags"
@@ -73,7 +36,7 @@ watch(type, () => {
     <div class="field">
       <Select
         v-model="type"
-        :options="typeOptions"
+        :options="accountTypeOptions"
         option-label="label"
         option-value="value"
         placeholder="Тип записи"
@@ -95,7 +58,7 @@ watch(type, () => {
       ></InputText>
     </div>
 
-    <div class="field" v-if="type === 'LOCAL'">
+    <div class="field" v-if="isLocalAccount">
       <Password
         v-model="password"
         toggleMask
@@ -113,7 +76,7 @@ watch(type, () => {
         icon="pi pi-trash"
         severity="danger"
         text
-        @click="AccountStore.deleteAccount(props.account.id)"
+        @click="deleteAccount"
       ></Button>
     </div>
   </div>

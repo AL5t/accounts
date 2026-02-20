@@ -1,5 +1,7 @@
-import type { AccountType } from '@/types/account';
 import * as yup from 'yup';
+
+import { ACCOUNT_TYPE } from '@/constants/account';
+import type { AccountType } from '@/types/account';
 
 export const AccountSchema = yup.object({
   type: yup
@@ -15,8 +17,8 @@ export const AccountSchema = yup.object({
     .string()
     .max(100)
     .when('type', {
-      is: 'LOCAL',
-      then: schema => schema.required('Пароль обязателен'),
-      otherwise: schema => schema.nullable(),
+      is: ACCOUNT_TYPE.LOCAL,
+      then: (schema) => schema.required('Пароль обязателен'),
+      otherwise: (schema) => schema.nullable(),
     }),
 });

@@ -1,8 +1,10 @@
-import type { Account } from "@/types/account";
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 import { v4 as uuidv4 } from 'uuid';
 
-const STORAGE_KEY = 'accounts';
+import { useAccountsStorage } from '@/composables/useAccountsStorage';
+import type { Account } from '@/types/account';
+
+const accountsStorage = useAccountsStorage();
 
 export const useAccountStore = defineStore('AccountStore', {
   state: () => ({
@@ -11,14 +13,11 @@ export const useAccountStore = defineStore('AccountStore', {
 
   actions: {
     load() {
-      const dataFromStorage = localStorage.getItem(STORAGE_KEY);
-      if(dataFromStorage) {
-        this.accounts = JSON.parse(dataFromStorage);
-      }
+      this.accounts = accountsStorage.loadAccounts();
     },
 
     persist() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.accounts))
+      accountsStorage.persistAccounts(this.accounts);
     },
 
     addAccount() {
@@ -33,17 +32,17 @@ export const useAccountStore = defineStore('AccountStore', {
     },
 
     updateAccount(account: Account) {
-      const index = this.accounts.findIndex(item => item.id === account.id);
+      const index = this.accounts.findIndex((item) => item.id === account.id);
 
-      if(index !== -1) {
+      if (index !== -1) {
         this.accounts[index] = account;
       }
       this.persist();
     },
 
     deleteAccount(accountId: string) {
-      this.accounts = this.accounts.filter(item => item.id !== accountId);
+      this.accounts = this.accounts.filter((item) => item.id !== accountId);
       this.persist();
-    }
-  }
+    },
+  },
 });
