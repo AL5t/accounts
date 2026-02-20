@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Account } from '@/types/account';
-
 import { useAccountItemForm } from '@/composables/useAccountItemForm';
+import { InputText, Select, Password, Button } from 'primevue';
 
 const props = defineProps<{
   account: Account,
